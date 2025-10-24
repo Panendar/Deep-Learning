@@ -18,11 +18,13 @@ Deep Learning/
 A simple feedforward neural network that classifies handwritten digits from the MNIST dataset.
 
 **Architecture:**
+
 - Input Layer: 784 neurons (28×28 pixels)
 - Hidden Layer: 128 neurons with ReLU activation
 - Output Layer: 10 neurons (digits 0-9)
 
 **Features:**
+
 - ✅ Automated data loading and preprocessing
 - ✅ Normalization with mean=0.5, std=0.5
 - ✅ Training with Adam optimizer
@@ -31,6 +33,7 @@ A simple feedforward neural network that classifies handwritten digits from the 
 - ✅ Single image prediction with confidence scores
 
 **Performance:**
+
 - Training Epochs: 5
 - Test Accuracy: ~97-98%
 - Loss Function: CrossEntropyLoss
@@ -39,6 +42,7 @@ A simple feedforward neural network that classifies handwritten digits from the 
 ## 🛠️ Installation
 
 ### Prerequisites
+
 - Python 3.8+
 - PyTorch 2.0+
 - torchvision
@@ -46,16 +50,19 @@ A simple feedforward neural network that classifies handwritten digits from the 
 ### Setup
 
 1. Clone or download this repository:
+
 ```bash
 cd "c:\Users\venkata\Downloads\Gen_AI\Deep Learning"
 ```
 
 2. Install dependencies:
+
 ```bash
 pip install torch torchvision
 ```
 
 Or using conda:
+
 ```bash
 conda install pytorch torchvision cpuonly -c pytorch
 ```
@@ -69,6 +76,7 @@ python my_1st-NN.py
 ```
 
 **What happens:**
+
 1. Downloads MNIST dataset (first run only)
 2. Trains the model for 5 epochs
 3. Displays training loss and accuracy per epoch
@@ -76,6 +84,7 @@ python my_1st-NN.py
 5. Prompts for an image index to predict
 
 **Example Output:**
+
 ```
 Epoch 1/5, Loss: 0.2631, Accuracy: 92.21%
 Epoch 2/5, Loss: 0.1170, Accuracy: 96.52%
@@ -91,6 +100,7 @@ True Label: 3, Predicted: 3, Confidence: 0.99
 ## 📊 Model Details
 
 ### Network Architecture
+
 ```
 SimpleNN(
   (flatten): Flatten()
@@ -101,21 +111,24 @@ SimpleNN(
 ```
 
 ### Hyperparameters
-| Parameter | Value |
-|-----------|-------|
-| Batch Size | 64 |
-| Learning Rate | 0.001 |
-| Epochs | 5 |
-| Optimizer | Adam |
+
+| Parameter     | Value            |
+| ------------- | ---------------- |
+| Batch Size    | 64               |
+| Learning Rate | 0.001            |
+| Epochs        | 5                |
+| Optimizer     | Adam             |
 | Loss Function | CrossEntropyLoss |
 
 ### Data Preprocessing
+
 - Convert to tensor
 - Normalize: `(pixel - 0.5) / 0.5` → range [-1, 1]
 
 ## 🧪 Experiments & Results
 
 ### MNIST Classification
+
 - **Dataset**: 60,000 training images, 10,000 test images
 - **Input**: 28×28 grayscale images
 - **Classes**: 10 digits (0-9)
@@ -124,6 +137,7 @@ SimpleNN(
 ## 📚 Learning Resources
 
 ### Concepts Covered
+
 - [x] Data loading and preprocessing
 - [x] Neural network architecture design
 - [x] Forward propagation
@@ -138,15 +152,18 @@ SimpleNN(
 ### Common Issues
 
 **1. Module not found error:**
+
 ```bash
 pip install torch torchvision
 ```
 
 **2. CUDA out of memory (if using GPU):**
+
 - Reduce batch size in the code
 - Or use CPU by setting `device = torch.device("cpu")`
 
 **3. Dataset download fails:**
+
 - Check internet connection
 - Dataset auto-downloads to `./data/` folder
 
@@ -169,6 +186,7 @@ pip install torch torchvision
 ## 🤝 Contributing
 
 Feel free to experiment with:
+
 - Different network architectures
 - Hyperparameter tuning
 - Additional datasets
