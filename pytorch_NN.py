@@ -4,6 +4,8 @@ import torch.optim as optim
 import torchvision
 from torchvision import transforms
 from torch.utils.data import DataLoader
+import matplotlib.pyplot as plt
+
 
 # Load and preprocess the data
 transform = transforms.Compose([
@@ -37,11 +39,12 @@ class SimpleNN(nn.Module):
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = SimpleNN().to(device)
 
-criterion = nn.CrossEntropyLoss()             # For classification
+criterion = nn.CrossEntropyLoss()            
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Training loop
 EPOCHS = 5
+losses = []
 for epoch in range(EPOCHS):
     model.train()                             # Training mode
     total_loss = 0
@@ -61,9 +64,10 @@ for epoch in range(EPOCHS):
         preds = outputs.argmax(dim=1)
         correct += (preds == labels).sum().item()
         total += labels.size(0)
-
     train_acc = 100 * correct / total
     avg_loss = total_loss / len(train_loader)
+    losses.append(avg_loss)
+    print(f"Epoch {epoch+1}/{EPOCHS}, Loss: {avg_loss:.4f}, Accuracy: {train_acc:.2f}%")
     print(f"Epoch {epoch+1}/{EPOCHS}, Loss: {avg_loss:.4f}, Accuracy: {train_acc:.2f}%")
 
 # Testing (Evaluation)
@@ -97,5 +101,15 @@ pred, conf = predict(img_label)
 print(f"True Label: {label}, Predicted: {pred}, Confidence: {conf:.2f}")
 
 
+# printing the  cross entropy loss
+loss = criterion(outputs, labels)
+print(f"Cross Entropy Loss: {loss.item():.4f}")
 
-
+# Plot the loss curve
+plt.figure(figsize=(10, 6))
+plt.plot(losses)
+plt.title('Training Loss Over Time')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.grid(True)
+plt.show()
