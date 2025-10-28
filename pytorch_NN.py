@@ -95,3 +95,7 @@ def predict(img_label):
 sample_img, label = test_data[img_label]
 pred, conf = predict(img_label)
 print(f"True Label: {label}, Predicted: {pred}, Confidence: {conf:.2f}")
+
+
+
+
