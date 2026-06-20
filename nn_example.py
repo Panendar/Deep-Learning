@@ -43,6 +43,31 @@ y_test_tensor = torch.from_numpy(y_test).float()
 print(X_train_tensor.shape)     # 30 features ~ 30 weights, 1 bias
 
 
+from torch.utils.data import DataLoader, Dataset
+
+class CustomDataset(Dataset):
+
+    def __init__(self,features, labels):
+        self.features = features
+        self.labels = labels
+    
+    def __len__(self):
+        return self.features.shape[0]
+    
+    def __getitem__(self,idx):
+        return self.features[idx], self.labels[idx]
+    
+train_dataset = CustomDataset(X_train_tensor, y_train_tensor)
+test_dataset = CustomDataset(X_test_tensor, y_test_tensor)
+
+print(train_dataset[:5])
+
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=32, shuffle=True)
+
+
+# defining the model    
+
 class MySimpleNN(nn.Module):
     
     def __init__(self,num_features):
@@ -60,8 +85,6 @@ class MySimpleNN(nn.Module):
 learning_rate = 0.1
 epochs = 25
 
-loss_function = nn.BCELoss()
-
 
 # creating model
 model = MySimpleNN(X_train_tensor.shape[1])
@@ -70,32 +93,45 @@ model = MySimpleNN(X_train_tensor.shape[1])
 optimizer = torch.optim.SGD(model.parameters(),lr=learning_rate)
 # model.parameters iterate over all your trainable weights and bias and adjust's them
 
+# defining the loss function
+loss_function = nn.BCELoss()
+
 # define loop
 for epoch in range(epochs):
 
-    # forward pass
-    y_pred = model(X_train_tensor)
+    for batch_features, batch_labels in train_loader:
 
-    # loss calculation
-    loss = loss_function(y_pred,y_train_tensor.view(-1,1))          # keep in mind to match the shape use view instead of reshape function to change
+        # Here we are using batch gradient descent, so we are using the whole training data in one go, it has two problems 1-> memory inefficiency 2-> Better convergence, so we will use mini batch gradient descent instead 
+        y_pred = model(batch_features)
 
-    # clear gradients -> back to zero
-    optimizer.zero_grad()
+        # loss calculation
+        loss = loss_function(y_pred,batch_labels.view(-1,1))          # keep in mind to match the shape use view instead of reshape function to change
 
-    # loss backward
-    loss.backward()
+        # clear gradients -> back to zero
+        optimizer.zero_grad()
 
-    # parameter updates
-    optimizer.step()
+        # loss backward
+        loss.backward()
 
-    # print loss in each epoch
-    print(f'Epoch: {epoch+1}, Loss: {loss.item()}')
+        # parameter updates
+        optimizer.step()
+
+        # print loss in each epoch
+        print(f'Epoch: {epoch+1}, Loss: {loss.item():.4f}')
 
 
 # model evaluation
+model.eval()        # set the model to evaluation mode
+accuracy = []
 with torch.no_grad():
-    y_pred = model(X_test_tensor)
-    y_pred = (y_pred > 0.5).float()
-# print(y_pred)
-    accuracy = (y_pred == y_test_tensor.view(-1,1)).float().mean()
-    print(f'Accuracy: {accuracy.item()}')
+    for batch_features, batch_labels in test_loader:
+        y_pred = model(batch_features)
+        y_pred = (y_pred > 0.8).float()     # convert probabilities to binary predictions
+        
+        # calculate accuracy for the current batch
+        batch_accuracy = (y_pred.view(-1) == batch_labels).float().mean()
+        accuracy.append(batch_accuracy)
+
+# calculate overall accuracy
+overall_accuracy = sum(accuracy)/ len(accuracy)
+print(f"Accuracy: {overall_accuracy:.4f}")
